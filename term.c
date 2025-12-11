@@ -55,15 +55,3 @@ void enable_raw_mode() {
     die("tcsetattr");
   }
 }
-
-void term_countdown() {
-  clear_term();
-  printf("3\r\n");
-  sleep(1);
-  printf("2\r\n");
-  sleep(1);
-  printf("1\r\n");
-  sleep(1);
-  clear_term();
-}
-

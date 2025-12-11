@@ -11,8 +11,4 @@ static inline void clear_term() {
     printf("\033[2J\033[H");
 }
 
-// counts down from 3 to then returns
-// clears term before and after
-void term_countdown();
-
 #endif
