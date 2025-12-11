@@ -1,6 +1,17 @@
 main.o: main.c
 	gcc -c main.c
-all: main.o
-	gcc main.o
+
+input_letter.o: input_letter.c
+	gcc -c input_letter.c
+
+term.o: term.c
+	gcc -c term.c
+
+all: main.o input_letter.o term.o
+	gcc -O3 main.o input_letter.o term.o
+
 run: all
 	./a.out
+
+clean:
+	rm a.out *.o
