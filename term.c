@@ -48,14 +48,22 @@ void enable_raw_mode() {
   // timeout for read
   raw.c_cc[VMIN] = 0;  // min bytes before read() can return
  
-  // his real one
-  // raw.c_cc[VTIME] = 1; // wait 1/10 of a second
-
-  // the one i am using
-  raw.c_cc[VTIME] = 50;
+  raw.c_cc[VTIME] = 1; // wait 1/10 of a second
 
   result = tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
   if (result == -1) {
     die("tcsetattr");
   }
 }
+
+void term_countdown() {
+  clear_term();
+  printf("3\r\n");
+  sleep(1);
+  printf("2\r\n");
+  sleep(1);
+  printf("1\r\n");
+  sleep(1);
+  clear_term();
+}
+
