@@ -10,7 +10,7 @@ term.o: term.c
 db.o: db.c
 	gcc -c db.c
 
-all: main.o input_letter.o term.o
+all: main.o input_letter.o term.o db.o
 	gcc -O3 -lsqlite3 main.o input_letter.o term.o db.o
 
 run: all
