@@ -20,6 +20,19 @@ int main(void) {
     exit(1);
   }
 
+  char *sql = 
+    "CREATE TABLE IF NOT EXISTS results ("
+    "complete_at TIME,"
+    "accuracy DOUBLE,"
+    "time DOUBLE"
+    ");";
+
+  int rc = sqlite3_exec(db, sql, NULL, NULL, &err);
+  if (rc != SQLITE_OK) {
+    perror("Could create tables");
+    sqlite3_free(err);
+  }
+
   // close the db
   sqlite3_close(db);
 
@@ -55,8 +68,8 @@ int main(void) {
 
   clear_term();
 
-  int acc = letter_accuracy(letter_list, strlen(str));
-  printf("Accuracy: %d\r\n", acc);
+  double acc = letter_accuracy(letter_list, strlen(str));
+  printf("Accuracy: %f\r\n", acc);
 
   double time_taken =
       (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;

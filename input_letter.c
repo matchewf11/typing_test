@@ -53,7 +53,7 @@ void letter_set_status(InputLetter *list, int i, char c) {
   }
 }
 
-int letter_accuracy(const InputLetter *const list, int len) {
+double letter_accuracy(const InputLetter *const list, int len) {
   int right = 0;
   int wrong = 0;
 
@@ -66,5 +66,5 @@ int letter_accuracy(const InputLetter *const list, int len) {
     }
   }
 
-  return (100 * right) / (right + wrong);
+  return (100 * right) / ((float) (right + wrong));
 }
