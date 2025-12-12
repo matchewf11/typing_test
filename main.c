@@ -1,6 +1,8 @@
+#include <bits/time.h>
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <unistd.h>
 
 #include "input_letter.h"
@@ -18,6 +20,9 @@ int main(void) {
 
   sleep(1);
 
+  struct timespec start, end;
+  clock_gettime(CLOCK_MONOTONIC, &start);
+
   int at = 0;
   while (at < strlen(str)) {
     clear_term();
@@ -32,11 +37,18 @@ int main(void) {
     letter_set_status(letter_list, at, c);
     at++;
   }
+  clock_gettime(CLOCK_MONOTONIC, &end);
 
   clear_term();
 
-  // pritn out accuracy
-  // print ot wpm
+  int acc = letter_accuracy(letter_list, strlen(str));
+  printf("Accuracy: %d\r\n", acc);
+
+  double time_taken =
+      (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
+
+  printf("Time: %f seconds\r\n", time_taken);
+  printf("CPS: %f\r\n", strlen(str) / time_taken);
 
   free(letter_list);
   return 0;

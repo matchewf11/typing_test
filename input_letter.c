@@ -52,3 +52,19 @@ void letter_set_status(InputLetter *list, int i, char c) {
     list[i].status = WRONG;
   }
 }
+
+int letter_accuracy(const InputLetter *const list, int len) {
+  int right = 0;
+  int wrong = 0;
+
+  for (int i = 0; i < len; i++) {
+    LetterStatus ls = list[i].status;
+    if (ls == RIGHT) {
+      right++;
+    } else if (ls == WRONG) {
+      wrong++;
+    }
+  }
+
+  return (100 * right) / (right + wrong);
+}

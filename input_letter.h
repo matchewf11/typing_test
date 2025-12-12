@@ -12,4 +12,7 @@ void print_input_letter(const InputLetter *const list, int len);
 // set thing at i to right
 void letter_set_status(InputLetter *list, int i, char c);
 
+// get the accuracy
+int letter_accuracy(const InputLetter *const list, int len);
+
 #endif
