@@ -4,11 +4,25 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+#include <sqlite3.h>
 
 #include "input_letter.h"
 #include "term.h"
 
 int main(void) {
+
+  sqlite3 *db;
+  char *err = NULL;
+
+  // Open/Create db
+  if (sqlite3_open("typing.db", &db) != SQLITE_OK) {
+    perror("Could not open db");
+    exit(1);
+  }
+
+  // close the db
+  sqlite3_close(db);
+
   enable_raw_mode();
 
   char *str = "these are some words that you can type";

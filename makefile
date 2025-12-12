@@ -8,7 +8,7 @@ term.o: term.c
 	gcc -c term.c
 
 all: main.o input_letter.o term.o
-	gcc -O3 main.o input_letter.o term.o
+	gcc -O3 -lsqlite3 main.o input_letter.o term.o
 
 run: all
 	./a.out
