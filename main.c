@@ -38,5 +38,6 @@ int main(void) {
   // pritn out accuracy
   // print ot wpm
 
+  free(letter_list);
   return 0;
 }
