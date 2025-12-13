@@ -4,6 +4,8 @@
 #include <sqlite3.h>
 #include <stdlib.h>
 
+#include "typing.h"
+
 // make db and the tables if they do not exist
 // make sure that the db is not null
 // in client
@@ -14,9 +16,12 @@ sqlite3 *build_db();
 // returns n phrases
 // gives the len of teh phrases in out
 // ensure char is not null
-char** get_phrases(sqlite3 *db, int n, int *out);
+char **get_phrases(sqlite3 *db, int n, int *out);
 
-static inline void free_phrases(char** phrases, int len) {
+// reutnr -1 for an error, else return 0
+int store_results(sqlite3 *db, TestInfo info);
+
+static inline void free_phrases(char **phrases, int len) {
   for (int i = 0; i < len; i++) {
     free(phrases[i]);
   }

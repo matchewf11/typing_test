@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "typing.h"
+
 // return -1 for error
 // else return 0
 static int insert_default_phrases(sqlite3 *db) {
@@ -68,11 +70,11 @@ sqlite3 *build_db() {
                       "id INTEGER PRIMARY KEY AUTOINCREMENT,"
                       "phrase TEXT"
                       ");";
-  char *sql_results = "CREATE TABLE IF NOT EXISTS results("
+  char *sql_results = "CREATE TABLE IF NOT EXISTS results ("
                       "id INTEGER PRIMARY KEY AUTOINCREMENT,"
                       "accuracy REAL,"
                       "cps REAL,"
-                      "completed_at DATETIME DEFAULT CURRENT_TIMESTAMP" // time
+                      "completed_at DATETIME DEFAULT CURRENT_TIMESTAMP"
                       ");";
 
   rs = sqlite3_exec(db, pragma, NULL, NULL, &err_msg);
@@ -116,7 +118,7 @@ sqlite3 *build_db() {
   return db;
 }
 
-char** get_phrases(sqlite3 *db, int n, int *out) {
+char **get_phrases(sqlite3 *db, int n, int *out) {
   char *sql = "SELECT phrase FROM phrases ORDER BY RANDOM() LIMIT ?";
   sqlite3_stmt *stmt;
 
@@ -128,7 +130,7 @@ char** get_phrases(sqlite3 *db, int n, int *out) {
 
   sqlite3_bind_int(stmt, 1, n);
 
-  char **phrases = malloc(sizeof(char*) * n);
+  char **phrases = malloc(sizeof(char *) * n);
   if (!phrases) {
     sqlite3_finalize(stmt);
     *out = 0;
@@ -138,17 +140,37 @@ char** get_phrases(sqlite3 *db, int n, int *out) {
   int count = 0;
   while ((rc = sqlite3_step(stmt)) == SQLITE_ROW && count < n) {
     const unsigned char *text = sqlite3_column_text(stmt, 0);
-    if (!text) continue;
+    if (!text)
+      continue;
 
-    size_t len = strlen((const char*)text);
+    size_t len = strlen((const char *)text);
     char *copy = malloc(len + 1);
-    if (!copy) continue;
+    if (!copy)
+      continue;
 
-    strcpy(copy, (const char*) text);
+    strcpy(copy, (const char *)text);
     phrases[count++] = copy;
   }
 
   sqlite3_finalize(stmt);
   *out = count;
   return phrases;
+}
+
+int store_results(sqlite3 *db, TestInfo info) {
+  sqlite3_stmt *stmt;
+  char *sql = "INSERT INTO results (accuracy, cps) VALUES (?, ?)";
+
+  int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+  if (rc != SQLITE_OK) {
+    return -1;
+  }
+
+  sqlite3_bind_double(stmt, 1, info.accuracy);
+  sqlite3_bind_double(stmt, 2, info.cps);
+
+  rc = sqlite3_step(stmt);
+  sqlite3_finalize(stmt);
+
+  return rc == SQLITE_DONE ? 0 : -1;
 }
