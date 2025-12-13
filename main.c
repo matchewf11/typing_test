@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include <unistd.h>
 #include <sqlite3.h>
 
@@ -26,12 +25,7 @@ int main(void) {
   TestInfo test_info  = start_typing_test(str_list, out_len);
   print_test_info(test_info);
 
-  // free the str_list
-  for (int i = 0; i < out_len; i++) {
-    free(str_list[i]);
-  }
-  free(str_list);
-
+  free_phrases(str_list, out_len);
   sqlite3_close(db);
 
   return 0;
