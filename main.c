@@ -7,20 +7,24 @@
 
 int main(void) {
 
-  // testing it out
   sqlite3 *db = build_db();
   if (db == NULL) {
     perror("could not open db");
+    return 1;
   }
-
-  sqlite3_close(db);
-  // end of testing it out
 
   enable_raw_mode();
 
-  char *str_list[] = {"this is the first", "this is the second.",
-                      "this is the third"};
-  start_typing_test(str_list, 3);
+  int out_len;
+  char **str_list = get_phrases(db, 5, &out_len); // gets 5 phrases
+  if (str_list == NULL) {
+    perror("could not open db");
+    return 1;
+  }
+
+  start_typing_test(str_list, out_len);
+
+  sqlite3_close(db);
 
   return 0;
 }
