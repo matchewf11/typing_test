@@ -9,6 +9,9 @@
 #include "term.h"
 
 int main(void) {
+
+  // handle better err handling, avoid crashes
+
   enable_raw_mode();
 
   char *str = "these are some words that you can type";
@@ -17,8 +20,6 @@ int main(void) {
     perror("could not malloc");
     exit(1);
   }
-
-  sleep(1);
 
   struct timespec start, end;
   clock_gettime(CLOCK_MONOTONIC, &start);

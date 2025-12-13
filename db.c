@@ -2,15 +2,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void clear_phrases() {
+// -1 if there is an err
+static int clear_phrases(sqlite3 *db) {
+  char *sql = "DELETE FROM phrases;";
+  char *err = NULL;
 
+  if (sqlite3_exec(db, sql, NULL, NULL, &err) != SQLITE_OK) {
+    perror("could not delete all phrases");
+    sqlite3_free(err);
+    return -1;
+  }
+
+  return 0;
 }
 
-void add_all_phrases() {
-
+static int add_all_phrases() {
+  return 0;
 }
 
-
+// if it throws handle it better (return a default one)
 // could throw if it can not open the db
 void init_db() {
   sqlite3 *db;
@@ -20,10 +30,10 @@ void init_db() {
     perror("Could not open db");
     exit(1);
   }
-char *sql = "CREATE TABLE IF NOT EXISTS phrases ("
-    "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-    "phrase TEXT"
-    ");";
+  char *sql = "CREATE TABLE IF NOT EXISTS phrases ("
+              "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+              "phrase TEXT"
+              ");";
 
   // makea table with results
   // id of phrase used
