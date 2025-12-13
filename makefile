@@ -10,8 +10,11 @@ term.o: term.c
 db.o: db.c
 	gcc -c db.c
 
-all: main.o input_letter.o term.o db.o
-	gcc -O3 -lsqlite3 main.o input_letter.o term.o db.o
+typing.o: typing.c
+	gcc -c typing.c
+
+all: main.o input_letter.o term.o db.o typing.o
+	gcc -O3 -lsqlite3 main.o input_letter.o term.o db.o typing.o
 
 run: all
 	./a.out
