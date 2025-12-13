@@ -4,13 +4,21 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+#include <sqlite3.h>
 
 #include "input_letter.h"
 #include "term.h"
+#include "db.h"
 
 int main(void) {
 
-  // handle better err handling, avoid crashes
+  // testing it out
+  sqlite3 *db = build_db();
+  if (db == NULL) {
+    perror("could not open db");
+  }
+  sqlite3_close(db);
+  // end of testing it out
 
   enable_raw_mode();
 
