@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <unistd.h>
 #include <sqlite3.h>
 
@@ -23,6 +24,12 @@ int main(void) {
   }
 
   start_typing_test(str_list, out_len);
+
+  // free the str_list
+  for (int i = 0; i < out_len; i++) {
+    free(str_list[i]);
+  }
+  free(str_list);
 
   sqlite3_close(db);
 
