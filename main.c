@@ -23,6 +23,8 @@ int main(void) {
   struct timespec start, end;
   clock_gettime(CLOCK_MONOTONIC, &start);
 
+  // start timeing when first char is clicked
+
   int at = 0;
   while (at < strlen(str)) {
     clear_term();
