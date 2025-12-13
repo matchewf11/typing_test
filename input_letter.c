@@ -64,6 +64,11 @@ void print_input_letter(const InputLetter *const list, int len) {
       printf("%c", curr_char);
       break;
     }
+
+    if (curr_char == ' ' && i != 0 && list[i - 1].character == '.' &&
+        i != len - 1) {
+      printf("\r\n");
+    }
   }
   printf("\r\n");
 }
