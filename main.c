@@ -24,9 +24,7 @@ int main(void) {
   }
 
   TestInfo test_info  = start_typing_test(str_list, out_len);
-  printf("Accuracy: %f\r\n", test_info.accuracy);
-  printf("Time: %f seconds\r\n", test_info.time);
-  printf("CPS: %f\r\n", test_info.cps);
+  print_test_info(test_info);
 
   // free the str_list
   for (int i = 0; i < out_len; i++) {
