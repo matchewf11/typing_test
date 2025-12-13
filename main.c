@@ -1,8 +1,8 @@
-#include <unistd.h>
 #include <sqlite3.h>
+#include <unistd.h>
 
-#include "term.h"
 #include "db.h"
+#include "term.h"
 #include "typing.h"
 
 int main(void) {
@@ -22,7 +22,7 @@ int main(void) {
     return 1;
   }
 
-  TestInfo test_info  = start_typing_test(str_list, out_len);
+  TestInfo test_info = start_typing_test(str_list, out_len);
   print_test_info(test_info);
 
   free_phrases(str_list, out_len);
