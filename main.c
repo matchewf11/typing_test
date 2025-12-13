@@ -5,8 +5,7 @@
 #include "term.h"
 #include "typing.h"
 
-int main(void) {
-
+int main(int argc, char *argv[]) {
   sqlite3 *db = build_db();
   if (db == NULL) {
     perror("could not open db");
@@ -16,7 +15,7 @@ int main(void) {
   enable_raw_mode();
 
   int out_len;
-  char **str_list = get_phrases(db, 5, &out_len); // gets 5 phrases
+  char **str_list = get_phrases(db, 2, &out_len); // gets 2 phrases
   if (str_list == NULL) {
     perror("could not open db");
     return 1;
