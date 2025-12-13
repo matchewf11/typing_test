@@ -3,8 +3,10 @@
 
 typedef struct input_letter InputLetter;
 
-// make sure to check if this is null in caller
-InputLetter* input_letter_from_str(const char *const str);
+typedef struct {
+  InputLetter* list;
+  int len;
+} InputLetterList;
 
 // print a letter list
 void print_input_letter(const InputLetter *const list, int len);
@@ -15,7 +17,10 @@ void letter_set_status(InputLetter *list, int i, char c);
 // get the accuracy
 double letter_accuracy(const InputLetter *const list, int len);
 
-// check for null and free the each elem in list and list istelf when done
-InputLetter **input_letter_list(char **str, int len);
+// make a function that takes in **char and return InputLetter*
+// client can use one free on the pointer they get
+// make sure they check for null
+// add spaces in between '. F'
+InputLetterList letter_list(char **str_list, int len);
 
 #endif

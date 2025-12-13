@@ -1,7 +1,8 @@
-#include "input_letter.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "input_letter.h"
 
 typedef enum { RIGHT, WRONG, TODO } LetterStatus;
 
@@ -10,44 +11,42 @@ struct input_letter {
   LetterStatus status;
 };
 
-// @ deprecate this (make this private and static)
-InputLetter *input_letter_from_str(const char *const str) {
-  int str_len = strlen(str);
-
-  InputLetter *list = malloc(sizeof(InputLetter) * str_len);
-  if (list == NULL) {
-    return NULL;
-  }
-
-  for (int i = 0; i < str_len; i++) {
-    list[i].character = str[i];
-    list[i].status = TODO;
-  }
-
-  return list;
-}
-
-// make sure cleint checks null
-// make sure that client frees each one and the list itself
-InputLetter **input_letter_list(char **str, int len) {
-
-  InputLetter **result = malloc(sizeof(char*) * len);
-  if (result == NULL) {
-    return NULL;
-  }
-
+// make a function that takes in **char and return InputLetter*
+// client can use one free on the pointer they get
+// make sure they check for null
+// add spaces in between '. F'
+InputLetterList letter_list(char **str_list, int len) {
+  int total_len = len - 1;
   for (int i = 0; i < len; i++) {
-    result[i] = input_letter_from_str(str[i]);
-    if (result[i] == NULL) {
-      for (int j = 0; j < i; j++) {
-        free(result[j]);
-      }
-      free(result);
-      return NULL;
+    total_len += strlen(str_list[i]);
+  }
+
+  InputLetter *list = malloc(sizeof(InputLetter) * total_len);
+  if (list == NULL) {
+    return (InputLetterList){.list = NULL, .len = 0};
+  }
+
+  int list_i = 0;
+
+  // iterates over phrases
+  for (int i = 0; i < len; i++) {
+
+    // iterate over phrase chars
+    for (int j = 0; j < strlen(str_list[i]); j++) {
+      list[list_i].status = TODO;
+      list[list_i].character = str_list[i][j];
+      list_i++;
+    }
+
+    // execpt for last iteration
+    if (i != len - 1) {
+      list[list_i].status = TODO;
+      list[list_i].character = ' ';
+      list_i++;
     }
   }
 
-  return result;
+  return (InputLetterList){.list = list, .len = total_len};
 }
 
 void print_input_letter(const InputLetter *const list, int len) {
