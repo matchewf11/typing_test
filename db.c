@@ -72,7 +72,7 @@ sqlite3 *build_db() {
                       "id INTEGER PRIMARY KEY AUTOINCREMENT,"
                       "accuracy REAL,"
                       "cps REAL,"
-                      "phrase_id INTEGER"
+                      "completed_at DATETIME DEFAULT CURRENT_TIMESTAMP" // time
                       ");";
 
   rs = sqlite3_exec(db, pragma, NULL, NULL, &err_msg);
