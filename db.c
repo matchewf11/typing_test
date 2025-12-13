@@ -58,7 +58,7 @@ sqlite3 *build_db() {
   sqlite3 *db;
   char *err_msg = NULL;
 
-  int rs = sqlite3_open("typeing.db", &db);
+  int rs = sqlite3_open("typing.db", &db);
   if (rs != SQLITE_OK) {
     return NULL;
   }

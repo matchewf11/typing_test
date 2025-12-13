@@ -20,4 +20,4 @@ run: all
 	./a.out
 
 clean:
-	rm a.out *.o
+	rm a.out *.o *.db
