@@ -15,4 +15,7 @@ void letter_set_status(InputLetter *list, int i, char c);
 // get the accuracy
 double letter_accuracy(const InputLetter *const list, int len);
 
+// check for null and free the each elem in list and list istelf when done
+InputLetter **input_letter_list(char **str, int len);
+
 #endif

@@ -10,6 +10,7 @@ struct input_letter {
   LetterStatus status;
 };
 
+// @ deprecate this (make this private and static)
 InputLetter *input_letter_from_str(const char *const str) {
   int str_len = strlen(str);
 
@@ -24,6 +25,29 @@ InputLetter *input_letter_from_str(const char *const str) {
   }
 
   return list;
+}
+
+// make sure cleint checks null
+// make sure that client frees each one and the list itself
+InputLetter **input_letter_list(char **str, int len) {
+
+  InputLetter **result = malloc(sizeof(char*) * len);
+  if (result == NULL) {
+    return NULL;
+  }
+
+  for (int i = 0; i < len; i++) {
+    result[i] = input_letter_from_str(str[i]);
+    if (result[i] == NULL) {
+      for (int j = 0; j < i; j++) {
+        free(result[j]);
+      }
+      free(result);
+      return NULL;
+    }
+  }
+
+  return result;
 }
 
 void print_input_letter(const InputLetter *const list, int len) {
@@ -66,5 +90,5 @@ double letter_accuracy(const InputLetter *const list, int len) {
     }
   }
 
-  return (100 * right) / ((float) (right + wrong));
+  return (100 * right) / ((float)(right + wrong));
 }
