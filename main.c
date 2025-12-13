@@ -23,7 +23,10 @@ int main(void) {
     return 1;
   }
 
-  start_typing_test(str_list, out_len);
+  TestInfo test_info  = start_typing_test(str_list, out_len);
+  printf("Accuracy: %f\r\n", test_info.accuracy);
+  printf("Time: %f seconds\r\n", test_info.time);
+  printf("CPS: %f\r\n", test_info.cps);
 
   // free the str_list
   for (int i = 0; i < out_len; i++) {

@@ -6,9 +6,9 @@
 
 #include "input_letter.h"
 #include "term.h"
+#include "typing.h"
 
-void start_typing_test(char **str_list, int len) {
-
+TestInfo start_typing_test(char **str_list, int len) {
   InputLetterList temp = letter_list(str_list, len);
   if (temp.list == NULL) {
     perror("could not malloc");
@@ -45,12 +45,11 @@ void start_typing_test(char **str_list, int len) {
   clear_term();
 
   double acc = letter_accuracy(letter_list, letter_len);
-  printf("Accuracy: %f\r\n", acc);
-
   double time_taken =
       (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
-  printf("Time: %f seconds\r\n", time_taken);
-  printf("CPS: %f\r\n", letter_len / time_taken);
+  double cps = letter_len / time_taken;
 
   free(letter_list);
+
+  return (TestInfo) {.accuracy = acc, .time = time_taken, .cps = cps};
 }
