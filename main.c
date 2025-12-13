@@ -12,12 +12,11 @@ int main(void) {
   if (db == NULL) {
     perror("could not open db");
   }
+
   sqlite3_close(db);
   // end of testing it out
 
   enable_raw_mode();
-
   start_typing_test();
-
   return 0;
 }
