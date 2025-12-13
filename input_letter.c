@@ -11,10 +11,6 @@ struct input_letter {
   LetterStatus status;
 };
 
-// make a function that takes in **char and return InputLetter*
-// client can use one free on the pointer they get
-// make sure they check for null
-// add spaces in between '. F'
 InputLetterList letter_list(char **str_list, int len) {
   int total_len = len - 1;
   for (int i = 0; i < len; i++) {
