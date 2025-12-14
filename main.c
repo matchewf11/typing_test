@@ -28,6 +28,7 @@ int main(int argc, char *argv[]) {
     int out_len;
     char **str_list = get_phrases(db, 2, &out_len); // gets 2 phrases
     if (str_list == NULL) {
+      sqlite3_close(db);
       perror("could not open db");
       return 1;
     }
@@ -51,9 +52,11 @@ int main(int argc, char *argv[]) {
     TestAvgStats stats;
     int rc = get_results(db, &stats);
     if (rc == -1) {
+      sqlite3_close(db);
       perror("something bad happened");
       return 1;
     }
+    sqlite3_close(db);
     printf("Test Average Stats:\n");
     printf("  Accuracy (last 5): %.2f\n", stats.acc_5);
     printf("  CPS (last 5): %.2f\n", stats.cps_5);
