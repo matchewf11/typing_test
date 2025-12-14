@@ -14,17 +14,17 @@ CliOptions parse_cli(char **args, int len) {
         .err_msg = "too many arguments, currently only support one arg",
     };
   }
-  if (strcmp(args[1], "help")) {
+  if (strcmp(args[1], "help") == 0) {
     return (CliOptions){
         .cli_cmd = HELP,
         .err_msg = NULL,
     };
-  } else if (strcmp(args[1], "run")) {
+  } else if (strcmp(args[1], "run") == 0) {
     return (CliOptions){
         .cli_cmd = RUN,
         .err_msg = NULL,
     };
-  } else if (strcmp(args[1], "stats")) {
+  } else if (strcmp(args[1], "stats") == 0) {
     return (CliOptions){
         .cli_cmd = STATS,
         .err_msg = NULL,
