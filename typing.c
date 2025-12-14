@@ -19,9 +19,6 @@ TestInfo start_typing_test(char **str_list, int len) {
   int letter_len = temp.len;
 
   struct timespec start, end;
-  clock_gettime(CLOCK_MONOTONIC, &start);
-
-  // start timeing when first char is clicked
 
   int letter_i = 0;
 
@@ -35,6 +32,10 @@ TestInfo start_typing_test(char **str_list, int len) {
       exit(1);
     } else if (c == '\0') {
       continue;
+    }
+
+    if (letter_i == 0) {
+      clock_gettime(CLOCK_MONOTONIC, &start);
     }
 
     letter_set_status(letter_list, letter_i, c);
@@ -51,5 +52,5 @@ TestInfo start_typing_test(char **str_list, int len) {
 
   free(letter_list);
 
-  return (TestInfo) {.accuracy = acc, .time = time_taken, .cps = cps};
+  return (TestInfo){.accuracy = acc, .time = time_taken, .cps = cps};
 }
