@@ -7,6 +7,7 @@
 #include "typing.h"
 
 // fix err handling, and use fprintf(stderr, "%s\n", foo); instead of perror
+// keep it from the term.c stuff
 
 int main(int argc, char *argv[]) {
 
