@@ -42,10 +42,28 @@ int main(int argc, char *argv[]) {
     sqlite3_close(db);
     return 0;
   }
-  case STATS:
-    //  call get stats in the db
-    printf("This is the stats menu\n");
+  case STATS: {
+    sqlite3 *db = build_db();
+    if (db == NULL) {
+      perror("could not open db");
+      return 1;
+    }
+    TestAvgStats stats;
+    int rc = get_results(db, &stats);
+    if (rc == -1) {
+      perror("something bad happened");
+      return 1;
+    }
+    printf("Test Average Stats:\n");
+    printf("  Accuracy (last 5): %.2f\n", stats.acc_5);
+    printf("  CPS (last 5): %.2f\n", stats.cps_5);
+    printf("  Accuracy (last 12): %.2f\n", stats.acc_12);
+    printf("  CPS (last 12): %.2f\n", stats.cps_12);
+    printf("  Accuracy (all): %.2f\n", stats.acc_all);
+    printf("  CPS (all): %.2f\n", stats.cps_all);
     return 0;
+  }
+
   case ERROR:
     perror(cli_opts.err_msg);
     return 1;
