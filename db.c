@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "db.h"
 #include "typing.h"
 
 // return -1 for error
@@ -173,4 +174,46 @@ int store_results(sqlite3 *db, TestInfo info) {
   sqlite3_finalize(stmt);
 
   return rc == SQLITE_DONE ? 0 : -1;
+}
+
+int get_results(sqlite3 *db, TestAvgStats *stats) {
+  sqlite3_stmt *stmt;
+  char *sql = "SELECT "
+              "(SELECT AVG(accuracy) FROM (SELECT accuracy FROM results "
+              "ORDER BY completed_at DESC LIMIT 5)) as acc_5, "
+              "(SELECT AVG(cps) FROM (SELECT cps FROM results "
+              "ORDER BY completed_at DESC LIMIT 5)) as cps_5, "
+              "(SELECT AVG(accuracy) FROM (SELECT accuracy FROM results "
+              "ORDER BY completed_at DESC LIMIT 12)) as acc_12, "
+              "(SELECT AVG(cps) FROM (SELECT cps FROM results "
+              "ORDER BY completed_at DESC LIMIT 12)) as cps_12, "
+              "AVG(accuracy) as acc_all, "
+              "AVG(cps) as cps_all "
+              "FROM results";
+
+  int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+  if (rc != SQLITE_OK) {
+    return -1;
+  }
+
+  rc = sqlite3_step(stmt);
+  if (rc != SQLITE_ROW) {
+    sqlite3_finalize(stmt);
+    return -1;
+  }
+
+  if (sqlite3_column_type(stmt, 0) == SQLITE_NULL) {
+    sqlite3_finalize(stmt);
+    return -1;
+  }
+
+  stats->acc_5 = sqlite3_column_double(stmt, 0);
+  stats->cps_5 = sqlite3_column_double(stmt, 1);
+  stats->acc_12 = sqlite3_column_double(stmt, 2);
+  stats->cps_12 = sqlite3_column_double(stmt, 3);
+  stats->acc_all = sqlite3_column_double(stmt, 4);
+  stats->cps_all = sqlite3_column_double(stmt, 5);
+
+  sqlite3_finalize(stmt);
+  return 0;
 }
