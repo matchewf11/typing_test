@@ -10,7 +10,6 @@
 // keep it from the term.c stuff
 
 int main(int argc, char *argv[]) {
-
   CliOptions cli_opts = parse_cli(argv, argc);
 
   switch (cli_opts.cli_cmd) {
@@ -51,3 +50,14 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 }
+
+// avg acc last 5
+// avg cps last 5
+// avg acc last 12
+// avg cps last 12
+// avg acc last 50
+// avg cps last 50
+// avg acc last 100
+// avg cps last 100
+// avg acc all time
+// avg cps all time
