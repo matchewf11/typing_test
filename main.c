@@ -6,6 +6,8 @@
 #include "term.h"
 #include "typing.h"
 
+// fix err handling, and use fprintf(stderr, "%s\n", foo); instead of perror
+
 int main(int argc, char *argv[]) {
 
   CliOptions cli_opts = parse_cli(argv, argc);
