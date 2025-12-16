@@ -1,7 +1,6 @@
 put everything in teh build folder
 test the code
 
-
 db.c
 ```C
 #include <sqlite3.h>
