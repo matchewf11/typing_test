@@ -2,16 +2,16 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "typing_token.h"
+
 typedef enum { RIGHT, WRONG, TODO } TokenStatus;
 
-typedef struct {
+struct typing_token {
   char ch;
   TokenStatus status;
-} TypingToken;
+};
 
-// out is the len of the output list
-// make sure that return is not null
-static TypingToken *typing_token_list(const char *const *str_list, int len,
+TypingToken *typing_token_list(const char *const *str_list, int len,
                                       int *out) {
   int total_len = len - 1;
   for (int i = 0; i < len; i++) {
@@ -46,9 +46,7 @@ static TypingToken *typing_token_list(const char *const *str_list, int len,
   return list;
 }
 
-// prints out the typing token list
-// it gives them colors :)
-static void print_typing_token_list(const TypingToken *list, int len) {
+void print_typing_token_list(const TypingToken *list, int len) {
   for (int i = 0; i < len; i++) {
     TypingToken curr_token = list[i];
     char curr_ch = curr_token.ch;
@@ -72,7 +70,7 @@ static void print_typing_token_list(const TypingToken *list, int len) {
   printf("\r\n");
 }
 
-static void update_typing_token_status(TypingToken *list, int i, char c) {
+void update_typing_token_status(TypingToken *list, int i, char c) {
   if (list[i].ch == c) {
     list[i].status = RIGHT;
   } else {
@@ -80,7 +78,7 @@ static void update_typing_token_status(TypingToken *list, int i, char c) {
   }
 }
 
-static float letter_accuracy(const TypingToken *list, int len) {
+float letter_accuracy(const TypingToken *list, int len) {
   int right = 0;
   int wrong = 0;
 
