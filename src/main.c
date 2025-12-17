@@ -5,7 +5,7 @@
 int main(int argc, char *argv[]) {
 
   CliCmd cmd;
-  ParseResult ps = parse_args(argc, argv, &cmd);
+  ParseResult ps = parse_args(argc, (const char *const *)argv, &cmd);
 
   switch (cmd) {
   case CMD_RUN:
