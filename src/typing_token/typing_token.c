@@ -1,131 +1,96 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
+typedef enum { RIGHT, WRONG, TODO } TokenStatus;
 
+typedef struct {
+  char ch;
+  TokenStatus status;
+} TypingToken;
 
-// input_letter.c
-// ```C
-// #include <stdio.h>
-// #include <stdlib.h>
-// #include <string.h>
-//
-// #include "input_letter.h"
-//
-// typedef enum { RIGHT, WRONG, TODO } LetterStatus;
-//
-// struct input_letter {
-//   char character;
-//   LetterStatus status;
-// };
-//
-// InputLetterList letter_list(char **str_list, int len) {
-//   int total_len = len - 1;
-//   for (int i = 0; i < len; i++) {
-//     total_len += strlen(str_list[i]);
-//   }
-//
-//   InputLetter *list = malloc(sizeof(InputLetter) * total_len);
-//   if (list == NULL) {
-//     return (InputLetterList){.list = NULL, .len = 0};
-//   }
-//
-//   int list_i = 0;
-//
-//   // iterates over phrases
-//   for (int i = 0; i < len; i++) {
-//
-//     // iterate over phrase chars
-//     for (int j = 0; j < strlen(str_list[i]); j++) {
-//       list[list_i].status = TODO;
-//       list[list_i].character = str_list[i][j];
-//       list_i++;
-//     }
-//
-//     // execpt for last iteration
-//     if (i != len - 1) {
-//       list[list_i].status = TODO;
-//       list[list_i].character = ' ';
-//       list_i++;
-//     }
-//   }
-//
-//   return (InputLetterList){.list = list, .len = total_len};
-// }
-//
-// void print_input_letter(const InputLetter *const list, int len) {
-//   for (int i = 0; i < len; i++) {
-//     InputLetter curr_letter = list[i];
-//     char curr_char = curr_letter.character;
-//     switch (curr_letter.status) {
-//     case RIGHT:
-//       printf("\033[1;32m%c\033[0m", curr_char);
-//       break;
-//     case WRONG:
-//       printf("\033[1;31m%c\033[0m", curr_char);
-//       break;
-//     case TODO:
-//       printf("%c", curr_char);
-//       break;
-//     }
-//
-//     if (curr_char == ' ' && i != 0 && list[i - 1].character == '.' &&
-//         i != len - 1) {
-//       printf("\r\n");
-//     }
-//   }
-//   printf("\r\n");
-// }
-//
-// void letter_set_status(InputLetter *list, int i, char c) {
-//   if (list[i].character == c) {
-//     list[i].status = RIGHT;
-//   } else {
-//     list[i].status = WRONG;
-//   }
-// }
-//
-// double letter_accuracy(const InputLetter *const list, int len) {
-//   int right = 0;
-//   int wrong = 0;
-//
-//   for (int i = 0; i < len; i++) {
-//     LetterStatus ls = list[i].status;
-//     if (ls == RIGHT) {
-//       right++;
-//     } else if (ls == WRONG) {
-//       wrong++;
-//     }
-//   }
-//
-//   return (100 * right) / ((float)(right + wrong));
-// }
-// ```
-//
-// input_letter.h
-// ```C
-// #ifndef INPUT_LETTER_H
-// #define INPUT_LETTER_H
-//
-// typedef struct input_letter InputLetter;
-//
-// typedef struct {
-//   InputLetter* list;
-//   int len;
-// } InputLetterList;
-//
-// // print a letter list
-// void print_input_letter(const InputLetter *const list, int len);
-//
-// // set thing at i to right
-// void letter_set_status(InputLetter *list, int i, char c);
-//
-// // get the accuracy
-// double letter_accuracy(const InputLetter *const list, int len);
-//
-// // make a function that takes in **char and return InputLetter*
-// // client can use one free on the pointer they get
-// // make sure they check for null
-// // add spaces in between '. F'
-// InputLetterList letter_list(char **str_list, int len);
-//
-// #endif
-// ```
-//
+// out is the len of the output list
+// make sure that return is not null
+static TypingToken *typing_token_list(const char *const *str_list, int len,
+                                      int *out) {
+  int total_len = len - 1;
+  for (int i = 0; i < len; i++) {
+    total_len += strlen(str_list[i]);
+  }
+
+  TypingToken *list = malloc(sizeof(TypingToken) * total_len);
+  if (list == NULL) {
+    return NULL;
+  }
+
+  int list_i = 0;
+
+  // iterates over phrases
+  for (int i = 0; i < len; i++) {
+
+    // iterate over phrase chars
+    for (int j = 0; j < strlen(str_list[i]); j++) {
+      list[list_i].status = TODO;
+      list[list_i].ch = str_list[i][j];
+      list_i++;
+    }
+
+    // execpt for last iteration
+    if (i != len - 1) {
+      list[list_i].status = TODO;
+      list[list_i].ch = ' ';
+      list_i++;
+    }
+  }
+
+  return list;
+}
+
+// prints out the typing token list
+// it gives them colors :)
+static void print_typing_token_list(const TypingToken *list, int len) {
+  for (int i = 0; i < len; i++) {
+    TypingToken curr_token = list[i];
+    char curr_ch = curr_token.ch;
+    switch (curr_token.status) {
+    case RIGHT:
+      printf("\033[1;32m%c\033[0m", curr_ch);
+      break;
+    case WRONG:
+      printf("\033[1;31m%c\033[0m", curr_ch);
+      break;
+    case TODO:
+      printf("%c", curr_ch);
+      break;
+    }
+
+    if (curr_ch == ' ' && i != 0 && list[i - 1].ch == '.' && i != len - 1) {
+      printf("\r\n");
+    }
+  }
+
+  printf("\r\n");
+}
+
+static void update_typing_token_status(TypingToken *list, int i, char c) {
+  if (list[i].ch == c) {
+    list[i].status = RIGHT;
+  } else {
+    list[i].status = WRONG;
+  }
+}
+
+static float letter_accuracy(const TypingToken *list, int len) {
+  int right = 0;
+  int wrong = 0;
+
+  for (int i = 0; i < len; i++) {
+    TokenStatus ls = list[i].status;
+    if (ls == RIGHT) {
+      right++;
+    } else if (ls == WRONG) {
+      wrong++;
+    }
+  }
+  return right / (float)right + wrong;
+}
