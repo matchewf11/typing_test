@@ -511,4 +511,3 @@ static inline void print_test_info(TestInfo test_info) {
 
 #endif
 ```
-

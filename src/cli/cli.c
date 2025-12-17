@@ -2,7 +2,7 @@
 
 #include "cli.h"
 
-ParseResult parse_args(int argc, char **argv, CliCmd *out) {
+ParseResult parse_args(int argc, const char *const *argv, CliCmd *out) {
   if (argc == 1) {
     *out = CMD_ERROR;
     return PARSE_ERR_NOT_ENOUGH_ARGS;
