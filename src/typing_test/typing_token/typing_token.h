@@ -5,6 +5,7 @@ typedef struct typing_token TypingToken;
 
 // out is the len of the output list
 // make sure that return is not null
+// make sure to free when done
 TypingToken *typing_token_list(const char *const *str_list, int len, int *out);
 
 // prints out the typing token list
