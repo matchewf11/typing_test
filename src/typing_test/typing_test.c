@@ -4,9 +4,9 @@
 #include <time.h>
 #include <unistd.h>
 
+#include "../term/term.h"
 #include "typing_test.h"
 #include "typing_token/typing_token.h"
-#include "../term/term.h"
 
 struct test_info {
   float accuracy;
@@ -50,8 +50,7 @@ int typing_test(const char *const *str_list, int len, TestInfo *out) {
 
   clock_gettime(CLOCK_MONOTONIC, &end);
 
-  // add back if buggy
-  // clear_term(); // do i need this?
+  clear_term();
 
   float acc = letter_accuracy(token_list, token_len);
   float time_taken =
