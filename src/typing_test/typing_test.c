@@ -6,6 +6,7 @@
 
 #include "typing_test.h"
 #include "typing_token/typing_token.h"
+#include "../term/term.h"
 
 struct test_info {
   float accuracy;
@@ -26,7 +27,7 @@ int typing_test(const char *const *str_list, int len, TestInfo *out) {
   int letter_i = 0;
   while (letter_i < token_len) {
 
-    // clear_term();
+    clear_term();
 
     print_typing_token_list(token_list, token_len);
 
@@ -49,6 +50,7 @@ int typing_test(const char *const *str_list, int len, TestInfo *out) {
 
   clock_gettime(CLOCK_MONOTONIC, &end);
 
+  // add back if buggy
   // clear_term(); // do i need this?
 
   float acc = letter_accuracy(token_list, token_len);
