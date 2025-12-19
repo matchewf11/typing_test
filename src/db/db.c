@@ -1,32 +1,172 @@
 #include <sqlite3.h>
+#include <stdlib.h>
 
 // <https://sqlite.org/cintro.html>
 
+// Returns SQLITE_OK(0) if good
+// else will return error code
+// err code can be printed with sqlite3_errmsg();
+// be sure to sqlite3_close() when done (if succeeds)
+int db_open(sqlite3 **db) {
+  int rs = sqlite3_open("typing_test.db", db);
+  if (rs != SQLITE_OK) {
+    return rs;
+  }
 
+  char *sql = "PRAGMA foreign_keys = ON";
+  rs = sqlite3_exec(*db, sql, NULL, NULL, NULL);
+  if (rs != SQLITE_OK) {
+    sqlite3_close(*db);
+    return rs;
+  }
 
+  return SQLITE_OK;
+}
 
+// Init the schema of db
+// Return SQLITE_OK(0) if success
+// Else prints err code (sqlite3_errmsg())
+int db_init_schema(sqlite3 *db) {
+  char *sql = "CREATE TABLE IF NOT EXISTS phrases(phrase TEXT NOT NULL UNIQUE)";
+  int rs = sqlite3_exec(db, sql, NULL, NULL, NULL);
+  if (rs != SQLITE_OK) {
+    return rs;
+  }
+  return SQLITE_OK;
+}
 
+// also be sure to free each string then the list (malloced list of malloced
+// string). must check if main pointer is NULL (all string gurantted to be
+// properly malloced). n is the amount of phrases you wanted, out is how many
+// you got
+char **phrases_from_db(sqlite3 *db, int n, int *out) {
+  char *sql = "SELECT phrase FROM phrases ORDER BY RANDOM() LIMIT ?";
 
+  sqlite3_stmt *stmt;
 
+  int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+  if (rc != SQLITE_OK) {
+    *out = 0;
+    return NULL;
+  }
 
+  rc = sqlite3_bind_int(stmt, 1, n);
+  if (rc != SQLITE_OK) {
+    *out = 0;
+    sqlite3_finalize(stmt);
+    return NULL;
+  }
 
+  while (sqlite3_step(stmt) == SQLITE_ROW) {
+    const unsigned char *phrase = sqlite3_column_text(stmt, 0);
+    // copy string into one of my strings
+    // inc length
+  }
 
+  sqlite3_finalize(stmt);
+  *out = 0;    // fix this
+  return NULL; // handle this rigth
+}
 
+//   char *sql = "SELECT phrase FROM phrases ORDER BY RANDOM() LIMIT ?";
+//   sqlite3_stmt *stmt;
+//
+//   int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+//   if (rc != SQLITE_OK) {
+//     *out = 0;
+//     return NULL;
+//   }
+//
+//   sqlite3_bind_int(stmt, 1, n);
+//
+//   char **phrases = malloc(sizeof(char *) * n);
+//   if (!phrases) {
+//     sqlite3_finalize(stmt);
+//     *out = 0;
+//     return NULL;
+//   }
+//
+//   int count = 0;
+//   while ((rc = sqlite3_step(stmt)) == SQLITE_ROW && count < n) {
+//     const unsigned char *text = sqlite3_column_text(stmt, 0);
+//     if (!text)
+//       continue;
+//
+//     size_t len = strlen((const char *)text);
+//     char *copy = malloc(len + 1);
+//     if (!copy)
+//       continue;
+//
+//     strcpy(copy, (const char *)text);
+//     phrases[count++] = copy;
+//   }
+//
+//   sqlite3_finalize(stmt);
+//   *out = count;
+//   return phrases;
+// }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// sqlite3 *build_db() {
+//   sqlite3 *db;
+//   char *err_msg = NULL;
+//
+//   int rs = sqlite3_open("typing.db", &db);
+//   if (rs != SQLITE_OK) {
+//     return NULL;
+//   }
+//
+//   char *pragma = "PRAGMA foreign_keys = ON;";
+//   char *sql_phrases = "CREATE TABLE IF NOT EXISTS phrases ("
+//                       "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+//                       "phrase TEXT"
+//                       ");";
+//   char *sql_results = "CREATE TABLE IF NOT EXISTS results ("
+//                       "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+//                       "accuracy REAL,"
+//                       "cps REAL,"
+//                       "completed_at DATETIME DEFAULT CURRENT_TIMESTAMP"
+//                       ");";
+//
+//   rs = sqlite3_exec(db, pragma, NULL, NULL, &err_msg);
+//   if (rs != SQLITE_OK) {
+//     perror(err_msg);
+//     sqlite3_free(err_msg);
+//     sqlite3_close(db);
+//     return NULL;
+//   }
+//
+//   rs = sqlite3_exec(db, sql_phrases, NULL, NULL, &err_msg);
+//   if (rs != SQLITE_OK) {
+//     perror(err_msg);
+//     sqlite3_free(err_msg);
+//     sqlite3_close(db);
+//     return NULL;
+//   }
+//
+//   rs = sqlite3_exec(db, sql_results, NULL, NULL, &err_msg);
+//   if (rs != SQLITE_OK) {
+//     perror(err_msg);
+//     sqlite3_free(err_msg);
+//     sqlite3_close(db);
+//     return NULL;
+//   }
+//
+//   int is_empty = is_phrases_empty(db);
+//   if (is_empty == -1) {
+//     sqlite3_close(db);
+//     return NULL;
+//   }
+//
+//   if (is_empty) {
+//     rs = insert_default_phrases(db);
+//     if (rs == -1) {
+//       sqlite3_close(db);
+//       return NULL;
+//     }
+//   }
+//
+//   return db;
+// }
 
 // db.c
 // ```C
@@ -89,106 +229,7 @@
 //   return exists == 0;
 // }
 //
-// sqlite3 *build_db() {
-//   sqlite3 *db;
-//   char *err_msg = NULL;
 //
-//   int rs = sqlite3_open("typing.db", &db);
-//   if (rs != SQLITE_OK) {
-//     return NULL;
-//   }
-//
-//   char *pragma = "PRAGMA foreign_keys = ON;";
-//   char *sql_phrases = "CREATE TABLE IF NOT EXISTS phrases ("
-//                       "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-//                       "phrase TEXT"
-//                       ");";
-//   char *sql_results = "CREATE TABLE IF NOT EXISTS results ("
-//                       "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-//                       "accuracy REAL,"
-//                       "cps REAL,"
-//                       "completed_at DATETIME DEFAULT CURRENT_TIMESTAMP"
-//                       ");";
-//
-//   rs = sqlite3_exec(db, pragma, NULL, NULL, &err_msg);
-//   if (rs != SQLITE_OK) {
-//     perror(err_msg);
-//     sqlite3_free(err_msg);
-//     sqlite3_close(db);
-//     return NULL;
-//   }
-//
-//   rs = sqlite3_exec(db, sql_phrases, NULL, NULL, &err_msg);
-//   if (rs != SQLITE_OK) {
-//     perror(err_msg);
-//     sqlite3_free(err_msg);
-//     sqlite3_close(db);
-//     return NULL;
-//   }
-//
-//   rs = sqlite3_exec(db, sql_results, NULL, NULL, &err_msg);
-//   if (rs != SQLITE_OK) {
-//     perror(err_msg);
-//     sqlite3_free(err_msg);
-//     sqlite3_close(db);
-//     return NULL;
-//   }
-//
-//   int is_empty = is_phrases_empty(db);
-//   if (is_empty == -1) {
-//     sqlite3_close(db);
-//     return NULL;
-//   }
-//
-//   if (is_empty) {
-//     rs = insert_default_phrases(db);
-//     if (rs == -1) {
-//       sqlite3_close(db);
-//       return NULL;
-//     }
-//   }
-//
-//   return db;
-// }
-//
-// char **get_phrases(sqlite3 *db, int n, int *out) {
-//   char *sql = "SELECT phrase FROM phrases ORDER BY RANDOM() LIMIT ?";
-//   sqlite3_stmt *stmt;
-//
-//   int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
-//   if (rc != SQLITE_OK) {
-//     *out = 0;
-//     return NULL;
-//   }
-//
-//   sqlite3_bind_int(stmt, 1, n);
-//
-//   char **phrases = malloc(sizeof(char *) * n);
-//   if (!phrases) {
-//     sqlite3_finalize(stmt);
-//     *out = 0;
-//     return NULL;
-//   }
-//
-//   int count = 0;
-//   while ((rc = sqlite3_step(stmt)) == SQLITE_ROW && count < n) {
-//     const unsigned char *text = sqlite3_column_text(stmt, 0);
-//     if (!text)
-//       continue;
-//
-//     size_t len = strlen((const char *)text);
-//     char *copy = malloc(len + 1);
-//     if (!copy)
-//       continue;
-//
-//     strcpy(copy, (const char *)text);
-//     phrases[count++] = copy;
-//   }
-//
-//   sqlite3_finalize(stmt);
-//   *out = count;
-//   return phrases;
-// }
 //
 // int store_results(sqlite3 *db, TestInfo info) {
 //   sqlite3_stmt *stmt;
