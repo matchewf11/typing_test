@@ -1,5 +1,6 @@
 #include <sqlite3.h>
 #include <stdlib.h>
+#include <string.h>
 
 // <https://sqlite.org/cintro.html>
 
@@ -35,38 +36,78 @@ int db_init_schema(sqlite3 *db) {
   return SQLITE_OK;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // also be sure to free each string then the list (malloced list of malloced
 // string). must check if main pointer is NULL (all string gurantted to be
 // properly malloced). n is the amount of phrases you wanted, out is how many
 // you got
-char **phrases_from_db(sqlite3 *db, int n, int *out) {
-  char *sql = "SELECT phrase FROM phrases ORDER BY RANDOM() LIMIT ?";
-
-  sqlite3_stmt *stmt;
-
-  int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
-  if (rc != SQLITE_OK) {
-    *out = 0;
-    return NULL;
-  }
-
-  rc = sqlite3_bind_int(stmt, 1, n);
-  if (rc != SQLITE_OK) {
-    *out = 0;
-    sqlite3_finalize(stmt);
-    return NULL;
-  }
-
-  while (sqlite3_step(stmt) == SQLITE_ROW) {
-    const unsigned char *phrase = sqlite3_column_text(stmt, 0);
-    // copy string into one of my strings
-    // inc length
-  }
-
-  sqlite3_finalize(stmt);
-  *out = 0;    // fix this
-  return NULL; // handle this rigth
-}
+// char **phrases_from_db(sqlite3 *db, int n, int *out) {
+//   char *sql = "SELECT phrase FROM phrases ORDER BY RANDOM() LIMIT ?";
+//   sqlite3_stmt *stmt;
+//
+//   // out is here so that it does it before any returns
+//   *out = 0;
+//
+//   int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+//   if (rc != SQLITE_OK) {
+//     return NULL;
+//   }
+//
+//   rc = sqlite3_bind_int(stmt, 1, n);
+//   if (rc != SQLITE_OK) {
+//     sqlite3_finalize(stmt);
+//     return NULL;
+//   }
+//
+//   char **phrases = malloc(sizeof(char *) * n);
+//   if (phrases == NULL) {
+//     sqlite3_finalize(stmt);
+//     return NULL;
+//   }
+//
+//   while (sqlite3_step(stmt) == SQLITE_ROW) {
+//     const unsigned char *phrase = sqlite3_column_text(stmt, 0);
+//
+//     char *temp = malloc(sizeof(char) * (strlen((const char *)phrase) + 1));
+//     if (temp == NULL) {
+//       continue;
+//     }
+//
+//     strcpy(temp, (const char *)phrase);
+//     phrases[*out] = temp;
+//     (*out)++;
+//   }
+//
+//   (*out)++; // goes from i to len
+//   sqlite3_finalize(stmt);
+//   return phrases;
+// }
 
 //   char *sql = "SELECT phrase FROM phrases ORDER BY RANDOM() LIMIT ?";
 //   sqlite3_stmt *stmt;
