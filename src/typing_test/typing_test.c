@@ -8,12 +8,6 @@
 #include "typing_test.h"
 #include "typing_token/typing_token.h"
 
-struct test_info {
-  float accuracy;
-  float time;
-  float cps;
-};
-
 int typing_test(const char *const *str_list, int len, TestInfo *out) {
 
   int token_len;
